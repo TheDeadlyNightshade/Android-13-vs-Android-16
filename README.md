@@ -40,6 +40,22 @@ when you cross from 33 to 36.
 | [security-changes.md](./security-changes.md) | Implicit/pending intents, receiver export flags, safer intents, `MediaProjection` consent, non-SDK restrictions, install-time minimum target SDK |
 | [migration-checklists.md](./migration-checklists.md) | Practical "if your app does X on 13, here's what breaks at 16 and how to fix it" checklists, manifest audit, test plan |
 
+### Reference
+
+| Doc | Covers |
+|-----|--------|
+| [reference/foreground-service-types.md](./reference/foreground-service-types.md) | Full **foreground-service-type → required-permission** matrix (all 14 types + `mediaProcessing`), prerequisites, and the exceptions each misconfiguration throws |
+
+### Changelog (by version, instead of by topic)
+
+| Doc | Covers |
+|-----|--------|
+| [changelog/README.md](./changelog/README.md) | Index of per-version change pages |
+| [changelog/android-13.md](./changelog/android-13.md) | API 33 baseline changes |
+| [changelog/android-14.md](./changelog/android-14.md) | API 34 — targeting + all-apps changes |
+| [changelog/android-15.md](./changelog/android-15.md) | API 35 — targeting + all-apps changes |
+| [changelog/android-16.md](./changelog/android-16.md) | API 36 — targeting + all-apps changes |
+
 ## How to use this
 
 1. Start with **[00-overview.md](./00-overview.md)** to understand the gating model.

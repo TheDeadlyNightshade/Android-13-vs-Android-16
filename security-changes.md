@@ -110,6 +110,41 @@ Most of these are hardening that closes patterns apps (and malware) historically
 
 ---
 
+## All-apps security changes (apply even without raising `targetSdkVersion`)
+
+These activate once the device runs the given OS version, regardless of your target. Don't
+miss them — they can break things on a user's updated phone before you ship anything.
+
+### Android 14 (all apps)
+- 🟡 **`killBackgroundProcesses()` is self-only.** You can no longer kill other apps'
+  background processes; attempts fail silently (`Invalid packageName:` in logcat).
+- 🟢 **`MediaStore.OWNER_PACKAGE_NAME` may be redacted** unless the owner has an
+  always-visible package name or you hold `QUERY_ALL_PACKAGES` (Play-policy gated).
+
+### Android 15 (all apps)
+- 🟠 **OTP redaction in notifications.** Untrusted `NotificationListenerService` apps can't
+  read unredacted one-time-password content; only trusted (e.g. companion-device) services
+  are exempt. Plan alternative flows if you relied on reading OTPs from notifications.
+- 🟠 **Screen-share / screen-record protection.** Sensitive content (password fields, OTP
+  notifications) is auto-hidden during capture; notification content is redacted unless
+  `setPublicVersion()` is set. Use `setContentSensitivity()` to mark sensitive UI.
+- 🟡 **Force-stop cancels pending intents.** Entering the stopped state cancels the app's
+  pending intents and disables its widgets until next launch; re-register on
+  `ACTION_BOOT_COMPLETED` and detect via `ApplicationStartInfo.wasForceStopped()`.
+
+### Android 16 (all apps)
+- 🟠 **Intent-redirection hardening (default-on).** The platform hardens against intent
+  redirection exploits. Most apps are unaffected; if a legitimate nested-intent flow breaks,
+  you can *opt out per intent* (use sparingly):
+  ```kotlin
+  val sub: Intent? = intent.getParcelableExtra("sub_intent", Intent::class.java)
+  sub?.removeLaunchSecurityProtection()   // API 36+; reflection on ≤35
+  sub?.let { startActivity(it) }
+  ```
+- 🟡 **Ordered-broadcast priority is in-process only.** `android:priority` /
+  `IntentFilter.setPriority()` ordering is no longer guaranteed across processes; use real
+  IPC for cross-process coordination.
+
 ## Cross-cutting theme
 
 The arc from 13 → 16 systematically removes ways for one app (or a hidden component) to:
